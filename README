@@ -1,0 +1,21 @@
+# build the image
+#
+docker build -t ckl . # --no-cache
+
+# run the container
+# -it : interactive terminal
+# --rm: remove container when finished
+# --name: name the container ckl-dev
+# -v: mount local directory . into /usr/src/myapp in the container
+# ckl: name of the image to use
+# bash: command to run inside container
+#
+docker run -it --rm --name ckl-dev -v "$PWD":/usr/src/myapp -w /usr/src/myapp ckl bash
+
+# in the container: delete previous sessions (optional)
+#
+rm -rf sessions/*
+
+# in the container: run the "full" checklist
+#
+./ckl.py lists/travel/full.ckl

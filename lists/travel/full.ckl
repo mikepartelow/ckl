@@ -1,0 +1,85 @@
+from:travel/core
+from:travel/bike
+shirts
+  short sleeve shirts
+  long sleeve shirts
+  hike shirt
+  gym shirt
+  fancy shirt
+pants
+  hike pants
+  gym shorts
+  long pants
+  shorts
+  breakfast pants
+  fancy pants
+underpants
+  hike underpants
+  gym underpants
+shoes
+  sandals
+  skate shoes
+  hike shoes
+  walking shoes
+  gym shoes
+socks
+  hike socks
+  gym socks
+  cool socks
+jackets
+  rain jacket
+  hoodie
+  fleece
+  jacket
+  leather jacket
+  poncho
+hats
+  breakfast hat
+  warm hat
+  sun hat
+toiletries
+  foot powder
+  nail clippers
+  liquids
+    very small lotion
+    very small shampoo
+    very small conditioner
+travel accessories
+  stuffable backpack
+  safety pin / SIM ejector
+  dry box
+  day bag
+  ultralight packable day bag
+  packable checkable luggage
+  coffee thermos
+  luggage scale
+  car audio adapter
+  car power adapter
+  sunglasses hard case
+  handkerchief
+  medical supplies
+electronics
+  therapik
+  UE Boom
+  UE Roll
+  hand warmer
+  batteries
+    therapik battery
+  chargers
+    hand warmer charger
+specialty items
+  cigar cutter
+  gifts
+  snacks
+  bug repellant
+  snorkel
+  mask
+  black/utility tape for patching luggage, etc.
+  spare glasses
+road trip items
+  cooler (mandatory)
+  cigar box
+  beach tent
+  cold brew
+  breakfast
+  yoga mat (x2)
