@@ -1,0 +1,24 @@
+general
+  "full.ckl is newer than full.ckl.session. load it? yes/no"
+  consider: Session.loads().merge(Checklist.loads())
+  left/right: collapse/expand sublists
+  optional behavior: auto check/uncheck parent checklist when subitems are all checked
+  search (see pager.py, TextArea, etc but don't try to derive from them)
+  test really long checklist item.name
+  resize window to really small in both dimensions
+  from prompt_toolkit.application import get_app
+file
+  a from: that includes a from:
+  conflict resolution: a "shirts" ITEM in core, but a "shirts" sublist in full (which from:core)
+COMMAND LINE OPTS
+  resume previous
+  resume arbitrary
+  start new (delete session)
+  start new (preserve session)
+  validate checklist file syntax
+
+WORKFLOW:
+  start a new session, complete some items. add new items to checklist. resume session with new items.
+
+Docker:
+  a Docker app of this with docker args for checklists and whatnot
