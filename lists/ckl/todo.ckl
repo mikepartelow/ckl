@@ -16,10 +16,9 @@ COMMAND LINE OPTS
   resume arbitrary
   start new (delete session)
   start new (preserve session)
-  validate checklist file syntax
+  --validate checklist file syntax
+  --new-session (quit) does not overwrite old session (creates new one, both are resumeable)
 
-WORKFLOW:
-  start a new session, complete some items. add new items to checklist. resume session with new items.
 
 Docker:
   a Docker app of this with docker args for checklists and whatnot

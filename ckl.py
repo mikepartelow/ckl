@@ -226,14 +226,15 @@ class ChecklistParser:
         return self.checklist
 
 class ChecklistSession:
-    def __init__(self, path_to_checklist):
+    def __init__(self, path_to_checklist, new_session=False):
         self.path_to_checklist = path_to_checklist
         self.path_to_session = path_to_checklist.replace(LISTS_ROOT, SESSIONS_ROOT)
+        self.new_session = new_session
         self.checklist = None
         self.duplicates = None
 
     def load(self):
-        if os.path.exists(self.path_to_session):
+        if not self.new_session and os.path.exists(self.path_to_session):
             with open(self.path_to_session, 'r') as f:
                 self.checklist = ChecklistSession.loads(f.read())
         else:
@@ -439,8 +440,8 @@ def build_key_bindings():
 
     return kb
 
-def make_app(path_to_checklist):
-    session = ChecklistSession(path_to_checklist)
+def make_app(path_to_checklist, new_session):
+    session = ChecklistSession(path_to_checklist, new_session)
     checklist = session.load()
 
     def status_bar_text():
@@ -467,12 +468,13 @@ def make_app(path_to_checklist):
 
     return Application(layout=Layout(root_container), full_screen=True, key_bindings=build_key_bindings())
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     logging.basicConfig(filename='ckl.log', level=logging.DEBUG)
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("path_to_checklist", help="path to checklist")
+    parser.add_argument('path_to_checklist', help='path to checklist')
+    parser.add_argument('--new-session',     help='start new checklist session', action='store_true')
     args = parser.parse_args()
 
-    app = make_app(args.path_to_checklist)
+    app = make_app(args.path_to_checklist, args.new_session)
     app.run()
