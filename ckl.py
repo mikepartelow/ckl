@@ -1,56 +1,60 @@
 #!/usr/bin/env python3
 import os
-import logging
 import json
+import logging
 import argparse
 from prompt_toolkit import Application
-from prompt_toolkit.layout.containers import HSplit, Window, FloatContainer
-from prompt_toolkit.layout.controls import FormattedTextControl
+from prompt_toolkit.styles import Style
+from prompt_toolkit.application import get_app
+from prompt_toolkit.formatted_text import ANSI
+from prompt_toolkit.layout.screen import Point
 from prompt_toolkit.layout.layout import Layout
 from prompt_toolkit.key_binding import KeyBindings
-from prompt_toolkit.layout.screen import Point
+from prompt_toolkit.shortcuts import message_dialog
 from prompt_toolkit.layout import FloatContainer, Float
 from prompt_toolkit.widgets import Dialog, Label, Button
-from prompt_toolkit.formatted_text import ANSI
-from prompt_toolkit.styles import Style
+from prompt_toolkit.layout.controls import FormattedTextControl
 from prompt_toolkit.layout.margins import NumberedMargin, ScrollbarMargin
-from prompt_toolkit.shortcuts import message_dialog
-
+from prompt_toolkit.layout.containers import HSplit, Window, FloatContainer
 
 LISTS_ROOT      = 'lists'
 SESSIONS_ROOT   = 'sessions'
 
-class DuplicatesWarningDialog(Dialog):
-    def __init__(self, duplicates):
+def get_app_container_checklist_window():
+    app                 = get_app()
+    container           = app.layout.container
+    checklist_window    = container.content.children[0]
+
+    return (app, container, checklist_window)
+
+class OKDialog(Dialog):
+    def __init__(self, title='Epic', body='Dialog', button_text='OK', buttons=None):
         def all_done_ok_button_handler():
-            root_container.floats.pop()
+            app, container, checklist_window = get_app_container_checklist_window()
+            container.floats.pop()
             app.layout.focus(checklist_window)
 
+        if buttons is None:
+            buttons = [Button(text=button_text, handler=all_done_ok_button_handler),]
+
+        super().__init__(title=title, body=Window(content=FormattedTextControl(text=ANSI(body))), buttons=buttons)
+
+    def display(self):
+        app, container, checklist_window = get_app_container_checklist_window()
+        container.floats.append(Float(content=self))
+        app.layout.focus(container)
+
+class DuplicatesWarningDialog(OKDialog):
+    def __init__(self, duplicates):
         text = []
-        it = iter(session.duplicates)
+        it = iter(duplicates)
         for dup in it:
             for d in (dup, next(it)):
                 logging.warning("duplicate item: %s in %s line %s", *d)
                 text.append("{}: from {} line {}".format(*d))
             text.append('')
 
-        super().__init__(title=ANSI('Warning: Duplicate Items'), body=Window(content=FormattedTextControl(ANSI("\n".join(text)))),
-                         buttons=[Button(text='OK', handler=all_done_ok_button_handler),],)
-
-class OKDialog:
-    def __init__(self, title="Epic", body="OK"):
-        def all_done_ok_button_handler():
-            root_container.floats.pop()
-            app.layout.focus(checklist_window)
-
-        width = app.layout.current_window.render_info.window_width - 8
-
-        dialog = Dialog(title=title, body=Window(content=FormattedTextControl(text=ANSI(body.strip()))),
-                        buttons=[Button(text='OK', handler=all_done_ok_button_handler),],
-                        width=width)
-
-        root_container.floats.append(Float(content=dialog))
-        app.layout.focus(root_container)
+        super().__init__(title='Warning: Duplicate Items', body="\n".join(text))
 
 class HelpDialog(OKDialog):
     def __init__(self):
@@ -65,26 +69,17 @@ R         : reset checklist
 <CTRL>-F  : page down
 <CTRL>-B  : page up
 <CTRL>-Z  : go to end
-<CTRL>-A  : go to beginning""")
+<CTRL>-A  : go to beginning""".strip())
 
-class ChecklistCompletedDialog():
-    def __init__(self, checklist_control):
-        def all_done_ok_button_handler():
-            root_container.floats.pop()
-            app.layout.focus(checklist_window)
-            checklist_control.adjust_cursor_position()
+class ChecklistCompletedDialog(OKDialog):
+    def __init__(self):
+        super().__init__(title='Checklist Completed', body='      Fine Work', button_text='Indeed')
 
-        self.dialog = Dialog(title='Checklist Completed',
-                             body=Label(text='      Fine Work'),
-                             buttons=[Button(text='Indeed', handler=all_done_ok_button_handler),])
-
-        root_container.floats.append(Float(content=self.dialog))
-        app.layout.focus(root_container)
-
-class ResetConfirmationDialog():
+class ResetConfirmationDialog(OKDialog):
     def __init__(self, checklist_control):
         def handler():
-            root_container.floats.pop()
+            app, container, checklist_window = get_app_container_checklist_window()
+            container.floats.pop()
             app.layout.focus(checklist_window)
             checklist_control.adjust_cursor_position()
 
@@ -98,15 +93,9 @@ class ResetConfirmationDialog():
         def no_handler():
             handler()
 
-        self.dialog = Dialog(title='Uncheck All?',
-                             body=Label(text='This will erase all undo history.'),
-                             buttons=[Button(text='No', handler=no_handler),
-                                      Button(text='Yes', handler=yes_handler)])
-
-        root_container.floats.append(Float(content=self.dialog))
-        app.layout.focus(root_container)
-
-
+        super().__init__(title='Uncheck All?',
+                         body='This will erase all undo history.',
+                         buttons=[Button(text='No', handler=no_handler), Button(text='Yes', handler=yes_handler)])
 
 class Item:
     def __init__(self, name, checked=False):
@@ -375,7 +364,7 @@ class ChecklistControl(FormattedTextControl):
 
         @kb.add('R')
         def _(event):
-            ResetConfirmationDialog(self)
+            ResetConfirmationDialog(self).display()
 
         @kb.add('down')
         def _(event):
@@ -432,21 +421,26 @@ class ChecklistControl(FormattedTextControl):
                 self.adjust_cursor_position()
 
                 if len([i for i in self.checklist.items() if i.unchecked]) == 0:
-                    ChecklistCompletedDialog(self)
+                    ChecklistCompletedDialog().display()
 
         return kb
 
-if __name__ == "__main__":
-    logging.basicConfig(filename='ckl.log', level=logging.DEBUG)
+def build_key_bindings():
+    kb = KeyBindings()
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument("path_to_checklist", help="path to checklist")
-    args = parser.parse_args()
+    @kb.add('q')
+    def _(event):
+        event.app.exit()
 
-    # args = type('',(object,),{'path_to_checklist':"{}/travel/full.ckl".format(LISTS_ROOT)})()
-    # args = type('',(object,),{'path_to_checklist':"{}/travel/full.ckl.session.0".format(SESSIONS_ROOT)})()
+    @kb.add('?')
+    @kb.add('h')
+    def _(event):
+        HelpDialog().display()
 
-    session = ChecklistSession(args.path_to_checklist)
+    return kb
+
+def make_app(path_to_checklist):
+    session = ChecklistSession(path_to_checklist)
     checklist = session.load()
 
     def status_bar_text():
@@ -471,16 +465,14 @@ if __name__ == "__main__":
     if session.duplicates:
         root_container.floats.append(Float(content=DuplicatesWarningDialog(session.duplicates)))
 
-    kb = KeyBindings()
+    return Application(layout=Layout(root_container), full_screen=True, key_bindings=build_key_bindings())
 
-    @kb.add('q')
-    def _(event):
-        event.app.exit()
+if __name__ == "__main__":
+    logging.basicConfig(filename='ckl.log', level=logging.DEBUG)
 
-    @kb.add('?')
-    @kb.add('h')
-    def _(event):
-        HelpDialog()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("path_to_checklist", help="path to checklist")
+    args = parser.parse_args()
 
-    app = Application(layout=Layout(root_container), full_screen=True, key_bindings=kb)
+    app = make_app(args.path_to_checklist)
     app.run()
