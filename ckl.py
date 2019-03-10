@@ -202,7 +202,7 @@ class ChecklistParser:
 
             logging.debug(" file: %s linenum: %s, line: [%s]", os.path.basename(self.path), linenum, line.strip())
 
-            if line.startswith('#'):
+            if line.startswith('#') or line.isspace():
                 pass
             elif line.startswith('from:'):
                 parent_name = line.split('from:')[1].strip()
