@@ -10,6 +10,7 @@ general
 file
   a from: that includes a from:
   conflict resolution: a "shirts" ITEM in core, but a "shirts" sublist in full (which from:core)
+  nice error message for from:file_doesnt_exist
 COMMAND LINE OPTS
   resume previous
   resume arbitrary
