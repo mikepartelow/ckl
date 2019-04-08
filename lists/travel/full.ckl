@@ -1,5 +1,6 @@
 from:travel/core
 from:travel/bike
+from:travel/meds
 shirts
   short sleeve shirts
   long sleeve shirts
@@ -84,3 +85,8 @@ road trip items
   breakfast
   yoga mat (x2)
   pillows
+laptop
+  laptop
+  charger
+  cables
+  sleeve
