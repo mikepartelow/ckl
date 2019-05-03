@@ -1,5 +1,4 @@
 from:travel/core
-from:travel/bike
 from:travel/meds
 shirts
   short sleeve shirts
@@ -59,6 +58,8 @@ travel accessories
   sunglasses hard case
   handkerchief
   medical supplies
+    band aids
+    blister treatment
 electronics
   therapik
   UE Boom
@@ -85,6 +86,7 @@ road trip items
   breakfast
   yoga mat (x2)
   pillows
+  orange backpack
 laptop
   laptop
   charger
