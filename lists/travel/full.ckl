@@ -1,5 +1,6 @@
 from:travel/core
 from:travel/meds
+from:travel/coffee
 shirts
   short sleeve shirts
   long sleeve shirts
