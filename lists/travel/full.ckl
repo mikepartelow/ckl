@@ -1,9 +1,10 @@
 from:travel/core
 from:travel/meds
 from:travel/coffee
+from:travel/run
 shirts
-  short sleeve shirts
-  long sleeve shirts
+  short sleeve shirts (do not overpack)
+  long sleeve shirts (do not overpack)
   hike shirt
   gym shirt
   fancy shirt
@@ -11,7 +12,7 @@ pants
   hike pants
   gym shorts
   long pants
-  shorts
+  shorts (do not overpack)
   breakfast pants
   fancy pants
   convertible pants
@@ -25,9 +26,9 @@ shoes
   walking shoes
   gym shoes
 socks
-  hike socks
-  gym socks
-  cool socks
+  hike socks (think carefully)
+  gym socks (think carefully)
+  cool socks (think carefully)
 jackets
   rain jacket
   hoodie
@@ -35,6 +36,7 @@ jackets
   jacket
   leather jacket
   poncho
+  dude sweater
 hats
   breakfast hat
   warm hat
@@ -46,6 +48,7 @@ toiletries
     very small lotion
     very small shampoo
     very small conditioner
+    very small hair product
 travel accessories
   stuffable backpack
   safety pin / SIM ejector
@@ -93,7 +96,7 @@ road trip items
   yoga mat (x2)
   pillows
   orange backpack
-laptop
+laptop (are you sure you need it?)
   laptop
   charger
   cables

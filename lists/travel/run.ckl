@@ -1,0 +1,23 @@
+shirts
+  run shirt
+  run undershirt
+pants
+  run shorts
+  run long pants
+shoes
+  run shoes
+gloves
+  run gloves
+jackets
+  run jacket
+socks
+  run socks
+electronics
+  run watch
+  run watch charger
+  run headphones
+  run music player
+  run music player charger
+hats
+  run hat
+run sunglasses
